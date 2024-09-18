@@ -3,8 +3,11 @@ const express = require("express")
 const {
     register,
     login,
+    authCheck,
     forgetPassword
 } = require("../controllers/authController")
+
+const { authenticate } = require("../middlewares/authMiddleware")
 
 const {
     registerReq,
@@ -16,9 +19,11 @@ const router = express.Router()
 
 router.post("/login", loginReq(), login)
 
-router.post("/register", )
+router.post("/authenticate", authenticate, authCheck)
 
-router.post("/forget-password")
+router.post("/register", registerReq(), register)
+
+router.post("/forget-password", forgetPasswordReq(), forgetPassword)
 
 module.exports = {
     authRouter: router

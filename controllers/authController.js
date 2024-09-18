@@ -7,6 +7,10 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
 const {
+    isAuthenticated
+} = require("../services/authService")
+
+const {
     getUserByEmail
 } = require("../services/userService")
 
@@ -25,20 +29,17 @@ exports.login = asyncHandler (async (req, res) => {
 
     const { email, password } = validatedReq(req)
 
-    const user = await getUserByEmail(email)
+    const user = await getUserByEmail(email, true)
 
     if(user) {
-        if(bcrypt.compare(password, user.password)) {
-            const token = jwt.sign(user, process.env.JWT_SECRET)
+        const authenticatedUser = isAuthenticated(password, user)
 
-            user.token = token
-
+        if(authenticatedUser) {
             res.status(200)
                 .json({
                     success: true,
-                    data: user
+                    data: authenticatedUser
                 })
-            
         }
     }
 
@@ -48,6 +49,10 @@ exports.login = asyncHandler (async (req, res) => {
             message: "something went wrong."
         })
 }) 
+
+exports.authCheck = asyncHandler (async (req, res) => {
+    res.status(200).json(res.locals.user)
+})
 
 exports.forgetPassword = asyncHandler (async (req, res) => {
     res.json({ message: "need to implement." })

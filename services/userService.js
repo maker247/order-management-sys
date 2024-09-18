@@ -20,8 +20,8 @@ exports.getUser = async (uuid) => {
     return await getUser(uuid)
 }
 
-exports.getUserByEmail = async (email) => {
-    return await getUserByEmail(email)
+exports.getUserByEmail = async (email, incPwd = false) => {
+    return await getUserByEmail(email, incPwd)
 }
 
 exports.storeUser = async (data) => {
@@ -49,8 +49,6 @@ exports.updateUser = async (uuid, data) => {
     if(data.password) {
         data.password = await bcrypt.hash(data.password, 10)
     }
-
-    console.log(data)
 
     return await updateUser(uuid, data)
 }

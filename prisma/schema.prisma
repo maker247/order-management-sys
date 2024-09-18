@@ -29,16 +29,18 @@ model Role {
 }
 
 model Permission {
-  id    Int              @id @default(autoincrement())
-  uuid  String           @unique @default(uuid())
-  name  String           @unique
-  roles RolePermission[]
+  id   Int              @id @default(autoincrement())
+  uuid String           @unique @default(uuid())
+  name String           @unique
+  role RolePermission[]
 }
 
 model RolePermission {
-  id           Int        @id @default(autoincrement())
+  // id           Int        @id @default(autoincrement())
   role         Role       @relation(fields: [roleId], references: [id])
   roleId       Int
-  Permission   Permission @relation(fields: [permissionId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
   permissionId Int
+
+  @@id([roleId, permissionId])
 }

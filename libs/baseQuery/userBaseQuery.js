@@ -1,5 +1,3 @@
-const bcrypt = require("bcrypt")
-
 const prisma = require("../prismaClient")
 
 const user = prisma.user
@@ -7,12 +5,14 @@ const user = prisma.user
 exports.getUsers = async () => {
     return await user.findMany({
         select: {
-            id: true,
             uuid: true,
+            name: true,
             email: true,
-            roleId: true,
             role: {
-                include: true
+                select: {
+                    uuid: true,
+                    name: true
+                }
             }
         }
     })
@@ -22,8 +22,8 @@ exports.getUser = async (uuid) => {
     return await user.findUnique({ 
         where: { uuid },
         select: {
-            id: true,
             uuid: true,
+            name: true,
             email: true,
             roleId: true,
             role: {
@@ -37,12 +37,30 @@ exports.getUserById = async (id) => {
     return await user.findUnique({ where: { id: Number(id) } })
 }
 
-exports.getUserByEmail = async (email) => {
-    return await user.findUnique({ where: { email } })
+exports.getUserByEmail = async (email, incPwd = false) => {
+    return await user.findFirst({
+        where: { email },
+        select: {
+            uuid: true,
+            name: true,
+            email: true,
+            password: incPwd,
+            role: {
+                select: {
+                    uuid: true,
+                    name: true,
+                    permissions: {
+                        select: {
+                            permission: true
+                        }
+                    }
+                }
+            }
+        }
+    })
 }
 
 exports.storeUser = async (data) => {
-
     return await user.create({
         data: {
             name: data.name,

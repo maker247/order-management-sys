@@ -8,14 +8,19 @@ const {
     getUserByEmail
 } = require("../libs/baseQuery/userBaseQuery")
 
-exports.login = async (email, password) => {
-    const user = getUserByEmail(email)
+exports.isAuthenticated = async (reqPwd, user) => {
+    const comparePwd = await bcrypt.compare(reqPwd, user.password)
+    
+    if(comparePwd) {
+        user.role.permissions = user.role.permissions
+                                    .map(rolePermission => rolePermission.permission)        
 
-    if(user) {
-        if(bcrypt.compare(password, user.password)) {
-            const token = jwt.sign(user, process.env.JWT_SECRET)
+        const token = jwt.sign(user, process.env.JWT_SECRET)
 
-            
-        }
+        user.token = token
+
+        return user
     }
+
+    return false
 }
