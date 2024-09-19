@@ -32,10 +32,10 @@ exports.login = asyncHandler (async (req, res) => {
     const user = await getUserByEmail(email, true)
 
     if(user) {
-        const authenticatedUser = isAuthenticated(password, user)
+        const authenticatedUser = await isAuthenticated(password, user)
 
         if(authenticatedUser) {
-            res.status(200)
+            return res.status(200)
                 .json({
                     success: true,
                     data: authenticatedUser

@@ -12,6 +12,7 @@ exports.isAuthenticated = async (reqPwd, user) => {
     const comparePwd = await bcrypt.compare(reqPwd, user.password)
     
     if(comparePwd) {
+        
         user.role.permissions = user.role.permissions
                                     .map(rolePermission => rolePermission.permission)        
 

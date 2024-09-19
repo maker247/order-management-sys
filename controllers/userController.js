@@ -79,6 +79,14 @@ exports.update = asyncHandler(async (req, res) => {
 })
 
 exports.destroy = asyncHandler(async (req, res) => {
-    res.send("Not Implemented getUsers")
+    const { uuid } = req.params
+
+    await deleteUser(uuid)
+
+    res.status(204)
+        .json({
+            success: true,
+            message: "user deleted successfully."
+        })
 })
 

@@ -17,13 +17,23 @@ const {
 } = require("../libs/utls")
 
 exports.index = asyncHandler(async (req, res) => {
-    res.json(await getRoles())
+    const data = await getRoles()
+
+    res.json({
+        success: true,
+        data
+    })
 })
 
 exports.show = asyncHandler(async (req, res) => {
     const { uuid } = req.params
 
-    res.json(await getRoleByUuid(uuid))
+    const data = await getRoleByUuid(uuid)
+
+    res.json({
+        success: true,
+        data
+    })
 })
 
 exports.store = asyncHandler(async (req, res) => {
@@ -35,11 +45,13 @@ exports.store = asyncHandler(async (req, res) => {
     }
 
     const validated = validatedReq(req)
+
+    const data = await storeRole(validated)
     
     res.status(201)
         .json({
             success: true,
-            data: await storeRole(validated)
+            data
         })
 })
 
